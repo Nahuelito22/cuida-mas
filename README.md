@@ -8,7 +8,7 @@
 | Nombre | GitHub |
 |---|---|
 | Nahuel Ghilardi | [@Nahuelito22](https://github.com/Nahuelito22) |
-| Gustavo Garcia | — |
+| Gustavo Garcia | [@GustiGarcia](https://github.com/GustiGarcia) |
 
 ---
 
