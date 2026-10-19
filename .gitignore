@@ -1,0 +1,25 @@
+# Dependencias y builds
+node_modules/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Variables de entorno (se versiona solo .env.example)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editores / SO
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Consigna del TP (material de la cátedra, no se publica)
+*.pdf

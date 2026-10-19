@@ -1,0 +1,91 @@
+# Cuidá+ — stack completo: docker compose up --build
+# El nombre del proyecto aísla contenedores, red y volúmenes de otros proyectos de la PC.
+name: cuida-mas
+
+x-backend: &backend
+  build: ./backend
+  image: cuida-mas/backend:local
+  restart: unless-stopped
+  environment: &backend-env
+    JWT_SECRET: ${JWT_SECRET:-cambiar-este-secreto-en-produccion}
+    JWT_EXPIRES_IN_SECONDS: ${JWT_EXPIRES_IN_SECONDS:-28800}
+    AUTH_MONGO_URI: mongodb://mongo:27017/cuidamas_auth
+    CUIDADOS_MONGO_URI: mongodb://mongo:27017/cuidamas_cuidados
+    AUTH_HOST: auth-service
+    AUTH_PORT: 4001
+    CUIDADOS_HOST: cuidados-service
+    CUIDADOS_PORT: 4002
+
+services:
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    # Solo accesible desde esta PC (para inspeccionar con MongoDB Compass).
+    ports:
+      - "127.0.0.1:${MONGO_HOST_PORT:-27030}:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # Carga los datos de demo la primera vez (si la base está vacía) y termina.
+  seed:
+    <<: *backend
+    restart: "no"
+    command: ["node", "scripts/seed.js"]
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  auth-service:
+    <<: *backend
+    command: ["node", "dist/apps/auth-service/main.js"]
+    depends_on:
+      mongo:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
+
+  cuidados-service:
+    <<: *backend
+    command: ["node", "dist/apps/cuidados-service/main.js"]
+    depends_on:
+      mongo:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
+
+  # Único servicio del backend expuesto: los microservicios solo se ven dentro de la red de Docker.
+  api-gateway:
+    <<: *backend
+    command: ["node", "dist/apps/api-gateway/main.js"]
+    environment:
+      <<: *backend-env
+      GATEWAY_PORT: 3000
+      CORS_ORIGIN: http://localhost:${FRONTEND_HOST_PORT:-5180}
+    ports:
+      - "${GATEWAY_HOST_PORT:-3100}:3000"
+    depends_on:
+      - auth-service
+      - cuidados-service
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build: ./frontend
+    image: cuida-mas/frontend:local
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_HOST_PORT:-5180}:80"
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+
+volumes:
+  mongo-data:

@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* Paleta de Cuidá+: verde azulado (salud, calma) sobre grises neutros. */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --color-brand-50: #edfaf7;
+  --color-brand-100: #d2f2ea;
+  --color-brand-200: #a8e4d7;
+  --color-brand-300: #72cfbd;
+  --color-brand-400: #3fb3a0;
+  --color-brand-500: #1f9686;
+  --color-brand-600: #0d7a6f;
+  --color-brand-700: #0c625a;
+  --color-brand-800: #0e4f49;
+  --color-brand-900: #10413d;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-slate-50 text-slate-800;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+}
