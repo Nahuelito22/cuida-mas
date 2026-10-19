@@ -59,9 +59,9 @@ son acciones con reglas propias; como verbos REST quedan explícitas y documenta
 
 ## Checklist de revisión antes de entregar
 
-- [ ] Completar nombres de integrantes en el `README.md`.
+- [x] Completar nombres de integrantes en el `README.md`.
 - [ ] Clonar el repo en una carpeta limpia y correr `docker compose up --build`.
-- [ ] Ingresar con los tres usuarios de prueba y recorrer el guion.
+- [x] Ingresar con los tres usuarios de prueba y recorrer el guion.
 - [ ] `cd backend && npm ci && npm test && npm run test:e2e`.
 - [ ] `cd frontend && npm ci && npm test`.
 - [ ] Abrir Swagger y GraphQL y probar un endpoint de cada uno.

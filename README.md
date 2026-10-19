@@ -7,8 +7,8 @@
 
 | Nombre | GitHub |
 |---|---|
-| _Completar_ | _@usuario_ |
-| _Completar_ | _@usuario_ |
+| Nahuel Ghilardi | [@Nahuelito22](https://github.com/Nahuelito22) |
+| Gustavo Garcia | — |
 
 ---
 
